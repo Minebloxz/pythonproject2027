@@ -1,1 +1,33 @@
+# LPP Optimizer: Project Architecture & Explanation
 
+## 1. Introduction & Objective
+The LPP Optimizer is a Python-based application designed to solve 2-variable Linear Programming Problems (LPP) using the **Corner Point Method**. It bridges theoretical Class 12 mathematics with real-world decision-making (factory production, diet planning, and portfolio investment) while handling edge cases, database persistence, and visual graph plotting.
+
+---
+
+## 2. Core Modules Breakdown
+
+### Module 1: Database Setup & History (`sqlite3`)
+- **Purpose:** Persistently stores solved problems, objective coefficients, and constraints so users can view past sessions.
+- **Major Code Chunks:**
+  - `init_db()`: Sets up the relational schema with two tables: `problems` (stores problem title, objective type MAX/MIN, and coefficients $p, q$) and `constraints` (stores foreign keys and inequality parameters $a, b, sign, k$).
+  - `save_problem(...)`: Automatically commits solved problem definitions and constraint parameters into the database upon successful computation.
+
+### Module 2: The Mathematical LPP Solver Engine
+- **Purpose:** The computational heart of the program. It uses determinants (Cramer's rule) to find line intersections, tests feasibility, and evaluates the objective function $Z = px + qy$.
+- **Major Code Chunks:**
+  - `intersect(c1, c2)`: Extracts coefficients from two linear constraints and calculates the intersection coordinate $(x, y)$ using the determinant $d = a_1b_2 - a_2b_1$. Returns `None` if lines are parallel ($d \approx 0$).
+  - `is_feasible(pt, constraints)`: Iterates through all constraints (including automated non-negativity limits $x \ge 0, y \ge 0$) to verify if a point satisfies every inequality within a floating-point tolerance of $1\text{e}-7$.
+  - `solve_lpp(...)`: Performs pairwise line intersections across all boundary constraints, filters unique feasible corner points, computes $Z$ at each point, and determines the optimal maximum or minimum value.
+
+### Module 3: Graph Visualization & Polygon Shading (`matplotlib`)
+- **Purpose:** Generates a graphical representation of the feasible region, boundary lines, and optimal solution.
+- **Major Code Chunks:**
+  - `sort_polygon(pts)`: Calculates the centroid of all valid corner points and sorts them counter-clockwise using `math.atan2` so Matplotlib can accurately draw and shade the feasible polygon.
+  - `plot_feasible_region(...)`: Plots constraint lines, shades the feasible polygon in light blue (`skyblue`), plots all corner points in red, and highlights the optimal corner point with a distinct gold star marker.
+
+### Module 4: Real-Life Templates & CLI Menu
+- **Purpose:** Provides a text-based user interface (CLI) and ready-made business/investment templates so users don't have to manually write constraints every time.
+- **Major Code Chunks:**
+  - `display_results(...)`: Formats the step-by-step textbook table showing each corner point and its corresponding $Z$ value, highlights the optimal solution, saves to the database, and prompts the user to view the graph.
+  - `main_menu()`: Handles user navigation through an interactive loop offering custom LPP entry, pre-built templates, and history logs.
