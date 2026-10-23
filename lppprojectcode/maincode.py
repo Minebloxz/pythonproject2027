@@ -148,7 +148,7 @@ def main_menu():
     init_db()
     while True:
         print("\n==============================\n    LPP OPTIMIZER TOOLKIT     \n==============================")
-        print("1. Solve Custom LPP\n2. Factory Template (Max Profit)\n3. Investment Template\n4. View History\n5. Exit")
+        print("1. Solve Custom LPP\n2. Demo Template\n3. Investment Template\n4. View History\n5. Exit")
         choice = input("\nSelect option (1-5): ").strip()
         
         if choice == '1':
@@ -163,9 +163,31 @@ def main_menu():
                 if len(parts) == 4: constraints.append((float(parts[0]), float(parts[1]), parts[2], float(parts[3])))
             display_results(title, obj, p, q, constraints, solve_lpp(obj, p, q, constraints))
         elif choice == '2':
+            print("\n" + "="*50)
+            print(" 📋 DEMO PROBLEM STATEMENT:")
+            print(" You run a small bakery and make cakes (x) and pastries (y).")
+            print(" Cakes earn ₹40 profit each and pastries earn ₹30 profit each.")
+            print(" You are constrained by oven time and flour availability:")
+            print("   - Objective: Maximize Z = 40x + 30y")
+            print("   - Constraints:")
+            print("       2x + y <= 100  (Oven hours)")
+            print("       x + y  <= 80   (Flour in kg)")
+            print("       x, y   >= 0    (Non-negativity)")
+            print("="*50)
             constraints = [(2, 1, "<=", 100), (1, 1, "<=", 80)]
-            display_results("Factory Production", "MAX", 40, 30, constraints, solve_lpp("MAX", 40, 30, constraints))
+            display_results("Demo Problem (Bakery)", "MAX", 40, 30, constraints, solve_lpp("MAX", 40, 30, constraints))
         elif choice == '3':
+            print("\n" + "="*50)
+            print(" 📋 INVESTMENT PORTFOLIO PROBLEM STATEMENT:")
+            print(" Split ₹1,00,000 total capital between a stable stock/fund (x)")
+            print(" and a risky/growth fund (y) for maximum expected return.")
+            print("   - Expected Return Rates: Stable (8%), Growth (15%) -> Maximize Z = 0.08x + 0.15y")
+            print("   - Constraints:")
+            print("       x + y <= 100000 (Total capital limit)")
+            print("       y     <= 60000  (At most 60% in risky growth fund)")
+            print("       x     >= 10000  (At least ₹10,000 in stable fund)")
+            print("       x, y  >= 0      (Non-negativity)")
+            print("="*50)
             constraints = [(1, 1, "<=", 100000), (0, 1, "<=", 60000), (1, 0, ">=", 10000)]
             display_results("Investment Portfolio", "MAX", 0.08, 0.15, constraints, solve_lpp("MAX", 0.08, 0.15, constraints))
         elif choice == '4':
